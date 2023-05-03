@@ -34,6 +34,15 @@ def display(grid: tp.List[tp.List[str]]) -> None:
 
 
 def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
+    answer = []
+    for i in range(n):
+        local = []
+        for j in range(n):
+            local.append(values[i * n + j])
+        answer.append(local)
+    return answer
+
+
     """
     Сгруппировать значения values в список, состоящий из списков по n элементов
 
@@ -42,10 +51,10 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    pass
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
+    return grid[pos[0]]
     """Возвращает все значения для номера строки, указанной в pos
 
     >>> get_row([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
@@ -59,6 +68,11 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
 
 
 def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
+    answer = []
+    for listItem in grid:
+        answer.append(listItem[pos[1]])
+    return answer
+
     """Возвращает все значения для номера столбца, указанного в pos
 
     >>> get_col([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
@@ -72,6 +86,14 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
 
 
 def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
+    answer = []
+    startX = pos[0] // 3 * 3
+    startY = pos[1] // 3 * 3
+    for i in range(startX, startX + 3):
+        for j in range(startY, startY + 3):
+            answer.append(grid[i][j])
+    return answer
+
     """Возвращает все значения из квадрата, в который попадает позиция pos
 
     >>> grid = read_sudoku('puzzle1.txt')
@@ -86,6 +108,11 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
 
 
 def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[int, int]]:
+    for listIn in grid:
+        for item in listIn:
+            if item == ".":
+                return grid.index(listIn), listIn.index(item)
+    return -1, -1
     """Найти первую свободную позицию в пазле
 
     >>> find_empty_positions([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']])
@@ -99,6 +126,17 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
+    elements = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}
+    items_in_row = get_row(grid, pos)
+    for i in range(len(items_in_row)):
+        elements.discard(items_in_row[i])
+    items_in_col = get_col(grid, pos)
+    for i in range(len(items_in_col)):
+        elements.discard(items_in_col[i])
+    items_in_block = get_block(grid, pos)
+    for i in range(len(items_in_block)):
+        elements.discard(items_in_block[i])
+    return elements
     """Вернуть множество возможных значения для указанной позиции
 
     >>> grid = read_sudoku('puzzle1.txt')
@@ -113,6 +151,20 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
+    point_pos = find_empty_positions(grid)
+    possible_values = find_possible_values(grid, point_pos)
+    for value in possible_values:
+        if find_empty_positions(grid)[0] == -1:
+            return grid
+        grid[point_pos[0]][point_pos[1]] = value
+        solve(grid)
+    if find_empty_positions(grid)[0] == -1:
+        return grid
+    grid[point_pos[0]][point_pos[1]] = "."
+    return grid
+
+
+
     """ Решение пазла, заданного в grid """
     """ Как решать Судоку?
         1. Найти свободную позицию
@@ -129,12 +181,32 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
+    for i in range(len(solution)):
+        for j in range(len(solution[i])):
+            check = set(get_row(solution, (i, j)) and get_col(solution, (i, j)) and get_block(solution, (i, j)))
+            if len(check) != 9 or "." in check:
+                return False
+    return True
     """ Если решение solution верно, то вернуть True, в противном случае False """
     # TODO: Add doctests with bad puzzles
     pass
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
+    sudoku = []
+    count = 0
+    for i in range(9):
+        sudoku_item = []
+        element = i * 3 + i // 3
+        for j in range(9):
+            if count == N:
+                sudoku_item.append(".")
+            else:
+                sudoku_item.append(str(element % 9 + 1))
+                element += 1
+                count += 1
+        sudoku.append(sudoku_item)
+    return sudoku
     """Генерация судоку заполненного на N элементов
 
     >>> grid = generate_sudoku(40)
