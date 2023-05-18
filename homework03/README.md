@@ -1,50 +1,47 @@
-Запустить тесты можно так:
+## Шаблоны заданий для [первой работы](https://dementiy.github.io/assignments/cypher/)
 
-```
-python -m unittest discover
-test_can_create_a_random_grid (test_life.TestGameOfLife) ... ok
-test_can_create_an_empty_grid (test_life.TestGameOfLife) ... ok
-test_can_update (test_life.TestGameOfLife) ... ok
-test_get_neighbours (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_bottom_side (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_left_side (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_lower_left_corner (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_lower_right_corner (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_right_side (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_upper_left_corner (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_upper_right_corner (test_life.TestGameOfLife) ... ok
-test_get_neighbours_for_upper_side (test_life.TestGameOfLife) ... ok
-test_is_changing (test_life.TestGameOfLife) ... ok
-test_is_max_generations_exceed (test_life.TestGameOfLife) ... ok
-test_is_not_changing (test_life.TestGameOfLife) ... ok
-test_prev_generation_is_correct (test_life.TestGameOfLife) ... ok
+Автоматическое форматирование при помощи [black](https://github.com/psf/black):
 
-----------------------------------------------------------------------
-Ran 16 tests in 0.026s
-
-OK
-
-test_can_create_a_random_grid (test_life_proto.TestGameOfLife) ... ok
-test_can_create_an_empty_grid (test_life_proto.TestGameOfLife) ... ok
-test_can_update (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_bottom_side (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_left_side (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_lower_left_corner (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_lower_right_corner (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_right_side (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_upper_left_corner (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_upper_right_corner (test_life_proto.TestGameOfLife) ... ok
-test_get_neighbours_for_upper_side (test_life_proto.TestGameOfLife) ... ok
-
-----------------------------------------------------------------------
-Ran 12 tests in 1.015s
-
-OK
-............................
-----------------------------------------------------------------------
-Ran 28 tests in 0.047s
-
-OK
+```sh
+$ black -l 100 caesar.py vigenere.py rsa.py
 ```
 
+Автоматическая сортировка импортируемых модулей при помощи [isort](https://github.com/timothycrosley/isort):
+
+```sh
+$ isort caesar.py vigenere.py rsa.py
+```
+
+Проверить аннотации типов при помощи [mypy](https://github.com/python/mypy):
+
+```sh
+$ mypy caesar.py vigenere.py rsa.py
+```
+
+Запустить доктесты можно так:
+
+```sh
+$ python -m doctest caesar.py
+$ python -m doctest vigenere.py
+$ python -m doctest rsa.py
+```
+
+Запустить юнит-тесты с помощью модуля [unittest](https://docs.python.org/3/library/unittest.html) можно так:
+
+```sh
+$ python -m unittest discover
+```
+
+Или с помощью модуля [pytest](https://docs.pytest.org/en/stable/):
+
+```sh
+$ pytest tests/test_caesar.py
+$ pytest tests/test_vigenere.py
+$ pytest tests/test_rsa.py
+```
+
+Для запуска всех тестов:
+
+```sh
+$ pytest
+```
